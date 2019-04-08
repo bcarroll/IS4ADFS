@@ -30,7 +30,7 @@ def env():
 # Main entry point
 if __name__ == '__main__':
     if not isAdmin():
-        errorMessage = "Privelege error: Administrative priveleges required to manage ADFS."
+        errorMessage = "Elevation required"
         logging.error(errorMessage)
         raise WindowsError(errorMessage)
         sys_exit(1)

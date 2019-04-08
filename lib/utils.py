@@ -12,9 +12,9 @@ def isAdmin():
     wi = WindowsIdentity.GetCurrent()
     wp = WindowsPrincipal(wi)
     if wp.IsInRole(WindowsBuiltInRole.Administrator):
+        logging.debug("isAdmin=True")
         return True
     else:
         return False
-
-print( isAdmin() )
+        logging.debug("isAdmin=False")
 
