@@ -6,18 +6,18 @@ pwd = osPathAbspath(osPathDirname(__file__))
 import logging
 import logging.config
 logging_config_file = osPathAbspath(osPathJoin(pwd, 'logging.ini'))
-print(logging_config_file)
 logging.config.fileConfig(fname=logging_config_file, disable_existing_loggers=False)
 logger = logging.getLogger('is4adfs')
+logging.debug('Logging configuration read from %s' % logging_config_file)
 ##############################################################################
 
 from sys import path as sys_path, exit as sys_exit
 sys_path.append(".")
 
-from flask import Flask, jsonify
+from flask import Flask, render_template, jsonify
 
-from lib.utils import isAdmin
-from lib.WindowsOS import WindowsVersion
+from lib.utils import isAdmin, request_wants_json
+import lib.ADFS as ADFS
 
 from views import config
 
@@ -26,10 +26,13 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return jsonify({
-            "name": "ADFS Integration Service",
-            "version": "%s" % (VERSION)
-        })
+    if request_wants_json():
+        return jsonify({
+                "name": "ADFS Integration Service",
+                "version": "%s" % (VERSION)
+            })
+    else:
+        return( render_template('index.html', serviceStatus = ADFS.ServiceStatus()) )
 
 ##############################################################################
 # /config/
