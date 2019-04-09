@@ -20,7 +20,7 @@ from flask import Flask, render_template, jsonify
 
 from lib.utils import isAdmin, request_wants_json
 import lib.ADFS as ADFS
-
+import lib.WindowsOS as WindowsOS
 from views import config
 
 VERSION = '0.0.1'
@@ -41,6 +41,20 @@ def index():
 @app.route('/config/env')
 def env():
     return(config.env())
+
+##############################################################################
+# /events/
+@app.route('/events/<logtype>')
+def events_source(logtype):
+    return(WindowsOS.EventLog(logtype=logtype))
+
+@app.route('/events/<logtype>/<int:eventtype>')
+def events_logtype_eventtype(logtype, eventtype):
+    return(WindowsOS.EventLog(logtype=logtype, eventtype=eventtype))
+
+@app.route('/events/<logtype>/<source>/<int:eventtype>')
+def events_logtype_source_eventtype(logtype, source, eventtype):
+    return(WindowsOS.EventLog(logtype=logtype, source=source, eventtype=eventtype))
 
 ##############################################################################
 # Main entry point
