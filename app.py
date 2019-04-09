@@ -11,7 +11,9 @@ logger = logging.getLogger('is4adfs')
 logging.debug('Logging configuration read from %s' % logging_config_file)
 ##############################################################################
 
-from sys import path as sys_path, exit as sys_exit
+from sys import path as sys_path
+from sys import exit as sys_exit
+from sys import argv as sys_argv
 sys_path.append(".")
 
 from flask import Flask, render_template, jsonify
@@ -43,9 +45,15 @@ def env():
 ##############################################################################
 # Main entry point
 if __name__ == '__main__':
-    if not isAdmin():
-        errorMessage = "Elevation required (Run as Administrator)"
-        logging.error(errorMessage)
-        raise WindowsError(errorMessage)
-        sys_exit(1)
+    if len(sys_argv) > 0 and sys_argv[1] == '-f':
+        logging.info("Running in force mode (-f passed on command line)")
+    else:
+        logging.debug("Command line arguments: %s" % str(sys_argv))
+        if not isAdmin():
+            errorMessage = "Elevation required (Run as Administrator)"
+            logging.error(errorMessage)
+            raise WindowsError(errorMessage)
+            sys_exit(1)
+        else:
+            logging.debug("Running as Administrator")
     app.run(debug=True)
